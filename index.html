@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora de custo da silagem de milho</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236a9362'/%3E%3Cpath d='M20 50V28a12 12 0 0 1 24 0v22M20 50h24M20 35h24M20 42h24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#6a9362">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f3f5f1;--sf:#fbfcfa;--tx:#2e3a2b;--mu:#7b8877;--ac:#6a9362;--hi:#b9902f;--ln:#e2e8de;--in:#f5f7f3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#181f17;--sf:#202920;--tx:#dce5d8;--mu:#8c9d87;--ac:#93bd8a;--hi:#d3b25e;--ln:#2d382b;--in:#1b231a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#181f17;--sf:#202920;--tx:#dce5d8;--mu:#8c9d87;--ac:#93bd8a;--hi:#d3b25e;--ln:#2d382b;--in:#1b231a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+h1{font:700 26px/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+h2{font-size:16px;margin:0}
+p.sub{color:var(--mu);margin:0 0 18px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:14px;margin-bottom:14px}
+.params{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;font-size:13px;color:var(--mu);gap:3px}
+input{font:inherit;color:var(--tx);background:var(--in);border:1px solid var(--ln);border-radius:6px;padding:6px 8px;width:100%;font-variant-numeric:tabular-nums}
+input:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:14px}
+.k{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px}
+.k small{color:var(--mu);display:block}
+.k b{font:700 22px Georgia,serif;font-variant-numeric:tabular-nums}
+.k.big{background:var(--ac);border-color:var(--ac)}
+.k.big small,.k.big b{color:var(--bg)}
+.k.big b{font-size:32px}
+.gh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px}
+.gh span{font:700 16px Georgia,serif;color:var(--ac);font-variant-numeric:tabular-nums}
+.sc{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th{font-size:12px;color:var(--mu);text-align:left;font-weight:600;padding:2px 4px}
+td{padding:3px 4px;border-top:1px solid var(--ln)}
+td.c{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:110px}
+td.n{width:36%}td.p{width:130px}td.u{width:80px}td.d{width:110px}td.x{width:34px}
+.tl{color:var(--mu);font-size:12px}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--ln);background:var(--in);color:var(--tx);padding:5px 10px}
+button.p{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.del{padding:2px 8px;color:var(--mu)}
+.bars{display:grid;gap:6px}
+.b{display:grid;grid-template-columns:150px 1fr 56px;gap:8px;align-items:center;font-size:13px}
+.b i{display:block;height:12px;border-radius:3px;background:var(--ac)}
+.b em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+.fin{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-variant-numeric:tabular-nums}
+.fin :nth-child(even){text-align:right}
+.note{font-size:12.5px;color:var(--mu)}
+.bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+@media(max-width:560px){.b{grid-template-columns:100px 1fr 48px}}
+body{background:radial-gradient(1200px 500px at 85% -10%,color-mix(in srgb,var(--ac) 14%,transparent),transparent),var(--bg);min-height:100vh}
+.hero{background:linear-gradient(120deg,#1f4a1c,#3f7036);color:#f3f7ef;padding:28px 16px 56px;margin-bottom:-36px}
+.hw{max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.org{font-size:13px;opacity:.8;margin-bottom:4px}
+.hero h1{font-size:clamp(24px,4vw,36px);margin:0 0 6px;color:inherit}
+.hero p.sub{color:#d3e4cc;margin:0;max-width:60ch}
+.hb{background:#f3f7ef;color:#1f4a1c;border:0;padding:10px 18px;font-weight:600;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:transform .15s}
+.hb:hover{transform:translateY(-1px)}
+main{max-width:1240px;padding-top:0;position:relative}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+aside{position:sticky;top:calc(12px + env(safe-area-inset-top,0px))}
+.card{border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 12px 28px -16px rgba(0,0,0,.25);transition:box-shadow .2s}
+.gh{padding-bottom:8px;border-bottom:1px solid var(--ln)}
+.gh h2{padding-left:10px;border-left:4px solid var(--ac)}
+input{background:transparent;border-color:transparent;transition:border-color .15s,background .15s}
+tr:hover input,input:hover{border-color:var(--ln)}
+input:focus{background:var(--in);border-color:var(--ac)}
+.params input{background:var(--in);border-color:var(--ln)}
+td{border-top:1px solid color-mix(in srgb,var(--ln) 60%,transparent)}
+tr:hover td{background:color-mix(in srgb,var(--ac) 6%,transparent)}
+.res{grid-template-columns:1fr 1fr;gap:10px}
+.res .k{border-radius:12px;padding:10px 12px}
+.res .k b{font-size:17px}
+.res .k.big{grid-column:1/-1;background:linear-gradient(135deg,#1f4a1c,#3f7036);border:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.res .k.big small{color:#d3e4cc}
+.res .k.big b{color:#fff;font-size:34px}
+.b i{background:linear-gradient(90deg,#3f7036,var(--ac));-webkit-print-color-adjust:exact;print-color-adjust:exact;min-width:2px}
+.b{grid-template-columns:120px 1fr 48px}
+button{transition:background .15s}
+.bar{margin:0}
+body{font-size:13.5px;line-height:1.35}
+.hero{background:linear-gradient(120deg,#527c4c,#7aa271);padding:16px 16px 44px;margin-bottom:-30px}
+.hero h1{font-size:clamp(20px,3vw,26px);margin-bottom:2px}
+.org{font-size:12px;margin-bottom:2px}
+.hero p.sub{font-size:12.5px}
+.hb{color:#3f6a39;padding:7px 14px;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.layout{grid-template-columns:minmax(0,1fr) 300px;gap:12px}
+.card{padding:10px 12px;margin-bottom:10px;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 16px -12px rgba(0,0,0,.18)}
+.gh{padding-bottom:6px;margin-bottom:4px}
+.gh h2{border-left:0;padding-left:0;display:flex;align-items:center;gap:8px;font-size:14px}
+.gh span{font-size:14px}
+.icw{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:color-mix(in srgb,var(--ac) 16%,transparent);flex:none}
+.ic{width:15px;height:15px;stroke:var(--ac);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.k small{display:flex;align-items:center;gap:6px;font-size:12px}
+.k small .icw{width:20px;height:20px}.k small .ic{width:12px;height:12px}
+.res .k.big{background:linear-gradient(135deg,#527c4c,#7aa271)}
+.res .k.big .icw{background:rgba(255,255,255,.22)}.res .k.big .ic{stroke:#fff}
+.res .k{padding:8px 10px}.res .k b{font-size:15px}.res .k.big b{font-size:26px}
+.b i{background:linear-gradient(90deg,#7aa271,var(--ac));height:9px}
+.bars{gap:4px}.b{font-size:12px}
+.params{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+label.f{font-size:12px;gap:2px}
+input{padding:3px 6px;font-size:13px}
+th{font-size:11px;padding:1px 4px}td{padding:1px 4px}
+td.c{width:90px}td.p{width:110px}td.d{width:95px}
+button{padding:3px 9px;font-size:12.5px}
+.note{font-size:11.5px;margin:6px 0 0}
+.ft{max-width:1240px;margin:0 auto;padding:12px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln);text-align:center;font-size:12px;color:var(--mu)}
+button .ic{pointer-events:none;display:block;width:16px;height:16px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}aside{position:static;order:-1}.hero{padding-bottom:48px}}
+select{font:inherit;color:var(--tx);background:var(--in);border:1px solid var(--ln);border-radius:6px;padding:4px 6px;width:100%}
+.est{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.est .k{padding:8px 10px}.est .k b{font-size:17px;display:block;text-transform:capitalize}
+.est .k .tl{display:block}
+.est .k.big{grid-column:1/-1;background:linear-gradient(135deg,#527c4c,#7aa271);border:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.est .k.big small,.est .k.big .tl{color:#d3e4cc}.est .k.big b{color:#fff;font-size:22px}
+.est .k.big .icw{background:rgba(255,255,255,.22)}.est .k.big .ic{stroke:#fff}
+@media(max-width:640px){select{font-size:16px;padding:8px;border-radius:8px}.est{grid-template-columns:1fr 1fr}.est .k.big b{font-size:19px}}
+.sv{margin-top:8px;padding:6px;border-radius:10px;background:var(--in)}
+.sv svg{width:100%;height:auto;max-height:200px;display:block}
+#estq .params,#silo-c .params{grid-template-columns:1fr 1fr}
+#silo b,#fat b{text-transform:none}
+.est .k.big.mid{background:linear-gradient(135deg,#a98535,#cdac5f)}
+.rec{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+.rec li{display:grid;grid-template-columns:16px 1fr;gap:8px;font-size:12.5px;line-height:1.4}
+.rec li::before{content:'✓';color:var(--ac);font-weight:700}
+.rec b{color:var(--tx)}
+#silo b{text-transform:none}
+.pg{height:8px;border-radius:5px;background:rgba(255,255,255,.3);margin-top:6px;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}.pg i{display:block;height:100%;background:#fff}
+.est .k.big.warn{background:linear-gradient(135deg,#a85b4c,#c98473)}
+.est{grid-template-columns:1fr 1fr}
+.est .k.hl{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,var(--sf))}
+@media(min-width:981px){.layout{grid-template-columns:minmax(0,1fr) 340px}aside{max-height:calc(100vh - 24px);overflow-y:auto}}
+@media(max-width:640px){aside{display:contents}.res{order:-1}aside>.card{order:1}aside>.bar{order:2}}
+.sbar{display:none}
+@media(max-width:640px){
+html{-webkit-text-size-adjust:100%}
+body{font-size:14px}
+main{padding:0 10px 8px}
+.hero{padding:14px 12px 40px}
+.hw{flex-direction:column;align-items:stretch;gap:10px}
+.hb{width:100%;padding:11px 14px;font-size:14px}
+.card{padding:10px}
+.params{grid-template-columns:1fr 1fr}
+input{font-size:16px;padding:8px;background:var(--in);border-color:var(--ln);border-radius:8px}
+.sc{overflow:visible}
+table,tbody,tr,td{display:block;min-width:0;width:100%}
+tr:first-child{display:none}
+tr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;padding:10px 0;border-top:1px solid var(--ln);position:relative}
+tr:hover td{background:none}
+td{border:0;padding:0;width:auto!important}
+td::before{display:block;font-size:11px;color:var(--mu);margin-bottom:2px}
+td.n{grid-column:1/-1;padding-right:42px}
+td.n input{font-weight:600}
+td.p::before{content:'Preço (R$)'}
+td.u::before{content:'Unid.'}
+td.d::before{content:'Dose / qtd.'}
+td.d .tl{display:block;padding:9px 0}
+td.c{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;white-space:normal;font-weight:600}
+td.c::before{content:'Custo/ha';margin:0}
+td.x{position:absolute;top:8px;right:0;width:auto!important}
+td.x .del{width:36px;height:36px;font-size:20px;line-height:1;padding:0}
+button[data-add]{width:100%;height:38px;margin-top:10px!important}
+.bar button{width:100%;height:40px}
+.b{grid-template-columns:96px 1fr 44px}
+.res .k.big b{font-size:28px}
+.ft{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+.sbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;justify-content:space-around;gap:8px;background:var(--sf);border-top:1px solid var(--ln);box-shadow:0 -6px 18px -10px rgba(0,0,0,.25);padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px))}
+.sbar div{text-align:center}.sbar small{display:block;font-size:11px;color:var(--mu)}
+.sbar b{font:700 17px Georgia,serif;color:var(--ac);font-variant-numeric:tabular-nums}
+}
+.tabs{display:none}
+@media(max-width:640px){
+.tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--sf);border-top:1px solid var(--ln);padding:4px 4px env(safe-area-inset-bottom,0px)}
+.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:0;background:none;color:var(--mu);font-size:11px;padding:2px;height:52px;border-radius:10px}
+.tabs button.on{color:var(--ac);font-weight:600}
+.tabs .icw{width:34px;height:24px;border-radius:12px;background:none}
+.tabs button.on .icw{background:color-mix(in srgb,var(--ac) 22%,transparent)}
+.tabs .ic{width:18px;height:18px;stroke:currentColor}
+.sbar{bottom:calc(56px + env(safe-area-inset-bottom,0px));padding:6px 14px;box-shadow:none}
+.ft{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+body[data-pg='1'] [data-pg]:not([data-pg='1']),body[data-pg='2'] [data-pg]:not([data-pg='2']),body[data-pg='3'] [data-pg]:not([data-pg='3']),body[data-pg='4'] [data-pg]:not([data-pg='4']),body[data-pg='5'] [data-pg]:not([data-pg='5']){display:none}
+}
+@media print{
+:root:root:root{--bg:#fff;--sf:#fff;--tx:#111;--mu:#555;--ac:#2f5d2b;--ln:#ccc;--in:#fff;color-scheme:light}
+@page{margin:12mm}
+body{background:#fff;font-size:11px;min-height:0}
+.noprint,button,td.x,th:last-child{display:none!important}
+.hero{background:none;color:#111;padding:0 0 8px;margin:0 0 12px;border-bottom:2px solid #2f5d2b}
+.hero p.sub,.org{color:#444}
+.layout{display:flex;flex-direction:column;gap:0}
+aside{position:static;order:-1}
+.card{box-shadow:none;break-inside:avoid;margin-bottom:10px;padding:10px}
+.res{margin-bottom:10px}
+.res .k{padding:6px 8px}.res .k b{font-size:14px}.res .k.big b{font-size:26px}
+input{border:0!important;padding:0!important;background:none!important;-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+table{min-width:0}.sc{overflow:visible}.params{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<header class="hero"><div class="hw"><div><div class="org">Agropecuária Caetê, Pecuária de Leite</div><h1>Custo de produção de silagem de milho</h1><p class="sub">Safrinha 2026, emitido em <span id="dt"></span>. Altere preços, doses e parâmetros: os totais se recalculam na hora.</p></div><button id="pr" class="hb noprint">Imprimir / salvar em PDF</button></div></header>
+<main>
+<div class="layout"><div>
+
+<div class="card" data-pg="2"><div class="gh"><h2>Parâmetros da lavoura</h2></div><div class="params" id="params"></div></div>
+
+<div id="groups"></div>
+
+<div class="card" data-pg="3"><div class="gh"><h2>Financeiro</h2><span id="t-fin"></span></div>
+<div class="fin" id="finbox"></div>
+<p class="note">Base de cálculo: total de insumos por hectare. Juros simples sobre o ciclo financeiro (meses ÷ 12).</p></div>
+
+</div><aside><div class="res" id="res" data-pg="1"></div><div class="card" data-pg="1"><div class="gh"><h2>Distribuição do custo</h2></div><div class="bars" id="bars"></div></div><div class="card" id="estq" data-pg="4"><div class="gh"><h2>Estoque de silagem</h2></div>
+<div class="params">
+<label class="f">Perdas na retirada (%)<input type="number" step="any" min="0" max="100" data-s="perda"></label>
+<label class="f">Consumo médio diário<input type="number" step="any" min="0" data-s="cons"></label>
+<label class="f">Base do consumo<select data-s="base"><option value="mn">kg matéria natural/dia</option><option value="ms">kg matéria seca/dia</option></select></label>
+<label class="f">Início da retirada<input type="date" data-s="ini"></label>
+</div>
+<div class="est" id="est"></div>
+<p class="note">Estoque útil = produção total × (1 − perdas). Custo atualizado = custo total da área ÷ estoque útil, ou seja, o que realmente chega ao cocho. Duração = estoque útil ÷ consumo diário. Perdas e consumo são valores iniciais: ajuste para a sua realidade.</p></div>
+<div class="card" id="silo-c" data-pg="5"><div class="gh"><h2>Silo trincheira</h2></div>
+<div class="params">
+<label class="f">Comprimento (m)<input type="number" step="any" min="0" data-s="sc"></label>
+<label class="f">Altura (m)<input type="number" step="any" min="0" data-s="sh"></label>
+<label class="f">Largura do fundo (m)<input type="number" step="any" min="0" data-s="sb"></label>
+<label class="f">Largura do topo (m)<input type="number" step="any" min="0" data-s="st"></label>
+<label class="f">Densidade (kg MN/m³)<input type="number" step="any" min="0" data-s="sd"></label>
+</div>
+<div class="sv" id="silo-svg"></div>
+<div class="est" id="silo"></div>
+<p class="note">Volume = (largura do fundo + largura do topo) ÷ 2 × altura × comprimento (seção trapezoidal). A comparação usa a produção total em matéria natural. Silagem de milho bem compactada costuma ficar entre 550 e 700 kg/m³. Medidas e densidade iniciais são exemplos: use as do seu silo.</p></div>
+<div class="card" id="fat-c" data-pg="5"><div class="gh"><h2>Retirada diária da fatia</h2></div>
+<div class="est" id="fat"></div>
+<ul class="rec">
+<li><span><b>Espessura mínima:</b> retire de 20 a 30 cm por dia ou mais. Em tempo quente e úmido, mire em 30 cm ou mais.</span></li>
+<li><span><b>Face lisa e vertical:</b> corte a camada de cima a baixo, em toda a seção, sem cavar buracos nem soltar material que fique exposto.</span></li>
+<li><span><b>Retire só o necessário:</b> tire apenas o que será consumido no dia (no máximo em 2 dias) e proteja as sobras do sol e da chuva.</span></li>
+<li><span><b>Equipamento adequado:</b> use desensilador ou pá carregadeira com corte limpo, sem revolver a face, para não entrar ar na massa.</span></li>
+<li><span><b>Cubra a face:</b> se o consumo for lento, mantenha a lona sobre a face entre as retiradas, bem presa.</span></li>
+<li><span><b>Lona e drenagem:</b> mantenha a lona do topo fixa com pesos e as canaletas limpas, para a água não escorrer para dentro do silo.</span></li>
+<li><span><b>Observe a face:</b> aquecimento, mofo ou cheiro forte de vinagre indicam deterioração. Descarte a parte estragada e não a forneça aos animais.</span></li>
+<li><span><b>Ajuste a face ao consumo:</b> se a espessura ficar abaixo do ideal, reduza a largura da face (silo mais estreito ou dividido) ou aumente o número de animais atendidos.</span></li>
+<li><span><b>Higiene no cocho:</b> remova as sobras todos os dias, antes de fornecer silagem nova.</span></li>
+</ul>
+<p class="note">Os limites de 20 e 30 cm são referências gerais de manejo. Confirme com o seu técnico para o clima e o tipo de silagem da propriedade.</p></div>
+<div class="bar noprint" data-pg="1"><button id="reset">Restaurar valores do PDF</button></div></aside></div>
+</main>
+<footer class="ft">&copy; 2026 Agropecuária Caetê e Alex S. Todos os direitos reservados.</footer>
+<nav class="tabs noprint" id="tabs"></nav>
+<div class="sbar noprint" id="sbar"></div>
+<script>
+const P=[['area','Área total (ha)'],['ciclo','Ciclo financeiro (meses)'],['mv','Produção de matéria verde (kg/ha)'],['ms','Matéria seca (%)'],['kc','Remuneração do capital próprio (% a.a.)'],['kb','Juros banco/cooperativa (% a.a.)'],['pb','Parcela financiada com empréstimo (%)']];
+const R=(n,p,u,d,m)=>({n,p,u,d,m:m||'d'});
+const def=()=>({
+S:{area:31,ciclo:6,mv:48900,ms:34,kc:14.75,kb:14.75,pb:70,perda:10,cons:3000,base:'mn',sc:80,sb:8,st:14,sh:3.5,sd:600,ini:new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10)},
+G:[
+{k:'Sementes',i:1,r:[R('DKB 358 PRO 4',1167.25,'/sc',1.17)]},
+{k:'Tratamento de semente',i:1,r:[]},
+{k:'Fertilizantes',i:1,r:[R('13-31-00',4.4174,'/kg',300),R('KCL',2.7941,'/kg',300),R('Ureia Super N',2.95,'/kg',400)]},
+{k:'Herbicidas',i:1,r:[R('Soberan',495.875,'/L',.4),R('Zapp QI 620 SL',25.512,'/L',2.5),R('Off Road',18.3,'/L',2),R('Sonda HT SC',26.9,'/L',2)]},
+{k:'Inseticidas',i:1,r:[R('Feroce WG',64.64,'/kg',2),R('Exalt',772.533,'/L',.6)]},
+{k:'Fungicidas e espalhantes',i:1,r:[R('Iharol Gold',20.125,'/L',.4),R('Belyan SC',173.325,'/L',.8),R('Unizeb Gold 750 WG',30.28,'/kg',2)]},
+{k:'Operações de lavoura',r:[R('Pulverização trator 90 cv + pulverizador 2500 L',37.82,'/ha',5),R('Semeadura trator 200 cv + plantadeira 12 linhas',350.22,'/ha',1),R('Adubação de cobertura trator 90 cv + Lancer',56,'/ha',2),R('Frete interno',38,'/ha',1)]},
+{k:'Mão de obra',r:[R('Fixa sem manutenção',38,'/ha',3),R('Temporária',0,'/ha',0)]},
+{k:'Ensilagem',r:[R('Colheita automotriz NH FR 850, plataforma 6 m',874.33,'/ha',1),R('Transporte (4 caminhões truck, raio 1 km)',190,'/h',1.491),R('Compactação trator 200 cv',300,'/h',.76),R('Compactação trator 165 cv',280,'/h',.76),R('Mão de obra',38,'/h',.76),R('Alimentação (total R$ da área)',450,'total R$',0,'t'),R('Lona (total R$ da área)',1812.6,'total R$',0,'t'),R('Diesel (total R$ da área)',10646,'total R$',0,'t'),R('Inoculante (total R$ da área)',1656.36,'total R$',0,'t')]},
+{k:'Cobertura verde',r:[R('Aveia preta (inverno; em 2026 optou-se por trigo)',0,'/kg',0)]},
+{k:'Administração',r:[R('Pró-labore',100,'/ha/ano',.5),R('Assistência técnica agronômica',70,'/ha/ano',.5),R('Fundação ABC',90,'/ha/ano',.5),R('Planejamento agronômico',5.8,'/ha',1),R('Correção de solo (análises/corretivo/aplicação)',80,'/ha',1)]},
+{k:'Remuneração da terra',r:[R('Remuneração sobre a terra (verão 2/3, inverno 1/3)',2685.95,'/ha/ano',.33)]}
+]});
+const IC={'Sementes':'M12 4c4 0 6 4 6 8s-3 8-6 8-6-4-6-8 2-8 6-8z','Tratamento de semente':'M12 4c4 0 6 4 6 8s-3 8-6 8-6-4-6-8 2-8 6-8z M9.5 12l2 2 3-4','Fertilizantes':'M9 3h6 M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3','Herbicidas':'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z','Inseticidas':'M12 8a4 4 0 0 1 4 4v3a4 4 0 0 1-8 0v-3a4 4 0 0 1 4-4z M9 5l1.5 2 M15 5l-1.5 2 M3 12h5 M16 12h5 M4 19l4-2 M20 19l-4-2','Fungicidas e espalhantes':'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z','Operações de lavoura':'M4 18a3 3 0 1 0 6 0 3 3 0 0 0-6 0z M16 18.5a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0z M7 15V7h6l2 6h5v3 M13 7v6','Mão de obra':'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21c0-4 4-6 8-6s8 2 8 6','Ensilagem':'M6 21V8a6 6 0 0 1 12 0v13 M6 21h12 M6 12h12 M6 16h12','Cobertura verde':'M5 19c0-8 5-14 15-14 0 10-6 15-14 15 M5 19l7-7','Administração':'M4 8h16v11H4z M9 8V5h6v3 M4 13h16','Remuneração da terra':'M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z','Financeiro':'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M14.5 9.5c0-1.5-5-1.5-5 0s5 1.5 5 3-5 1.5-5 0 M12 7v1.5 M12 15.5V17','param':'M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 7m-2 0a2 2 0 1 0 4 0 2 2 0 1 0-4 0 M8 17m-2 0a2 2 0 1 0 4 0 2 2 0 1 0-4 0','ok':'M5 12l4 4 10-10','x':'M6 6l12 12M18 6L6 18','clock':'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7v5l3 2','cal':'M4 6h16v14H4z M4 11h16 M8 3v5 M16 3v5','pie':'M12 3a9 9 0 1 0 9 9h-9z M15 3.5A9 9 0 0 1 20.5 9H15z','tag':'M20 12l-8 8-9-9V4h7z M7.5 7.5h.01','drop':'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z','pin':'M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z','coin':'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7v10 M9.5 10c0-2 5-2 5 0s-5 2-5 4 5 2 5 0'};
+const ico=n=>`<span class="icw"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${IC[n]||IC.coin}"/></svg></span>`;
+let S,G;
+const $=id=>document.getElementById(id);
+const f2=(v,d=2)=>(isFinite(v)?v:0).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const brl=(v,d=2)=>'R$ '+f2(v,d);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const cost=r=>r.m==='t'?(S.area>0?r.p/S.area:0):r.p*r.d;
+
+function build(){
+  ['perda','cons','base','ini','sc','sb','st','sh','sd'].forEach(k=>{const e=document.querySelector(`[data-s="${k}"]`);if(e)e.value=S[k]});
+  $('params').innerHTML=P.map(([k,l])=>`<label class="f">${l}<input type="number" step="any" min="0" data-s="${k}" value="${S[k]}"></label>`).join('');
+  $('groups').innerHTML=G.map((g,gi)=>`<div class="card" data-pg="${gi<6?2:3}"><div class="gh"><h2>${ico(g.k)}${g.k}</h2><span id="t-${gi}"></span></div><div class="sc"><table>
+  <tr><th>Item</th><th>Preço (R$)</th><th>Unid.</th><th>Dose / qtd. por ha</th><th style="text-align:right">Custo/ha</th><th></th></tr>
+  ${g.r.map((r,ri)=>`<tr><td class="n"><input data-g="${gi}" data-r="${ri}" data-f="n" value="${esc(r.n)}"></td>
+  <td class="p"><input type="number" step="any" min="0" data-g="${gi}" data-r="${ri}" data-f="p" value="${r.p}"></td>
+  <td class="u"><input data-g="${gi}" data-r="${ri}" data-f="u" value="${esc(r.u)}"></td>
+  <td class="d">${r.m==='t'?'<span class="tl">total ÷ área</span>':`<input type="number" step="any" min="0" data-g="${gi}" data-r="${ri}" data-f="d" value="${r.d}">`}</td>
+  <td class="c" id="c-${gi}-${ri}"></td><td class="x"><button class="del" title="Remover item" data-del="${gi}-${ri}">×</button></td></tr>`).join('')}
+  </table></div><button data-add="${gi}" style="margin-top:8px" title="Adicionar item" aria-label="Adicionar item"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>`).join('');
+  calc();
+}
+
+function calc(){
+  const tot=[];let ins=0,sum=0;
+  G.forEach((g,gi)=>{let t=0;g.r.forEach((r,ri)=>{const c=cost(r);t+=c;const e=$(`c-${gi}-${ri}`);if(e)e.textContent=f2(c)});
+    tot.push(t);sum+=t;if(g.i)ins+=t;const e=$('t-'+gi);if(e)e.textContent=brl(t)});
+  const fr=S.ciclo/12,pb=S.pb/100;
+  const jur=ins*fr*pb*S.kb/100, opo=ins*fr*(1-pb)*S.kc/100, fin=jur+opo;
+  const total=sum+fin, ens=tot[G.findIndex(g=>g.k==='Ensilagem')], sem=total-ens;
+  const ms=S.mv*S.ms/100;
+  $('t-fin').textContent=brl(fin);
+  $('finbox').innerHTML=`<span>Custo de empréstimos</span><span>${brl(jur)}</span><span>Custo de oportunidade do capital</span><span>${brl(opo)}</span>`;
+  const K=(l,v,c)=>`<div class="k ${c||''}"><small>${ico(/por kg/.test(l)?'tag':/seca \(kg/.test(l)?'drop':/insumos/.test(l)?'Fertilizantes':/rea/.test(l)?'pin':'coin')}${l}</small><b>${v}</b></div>`;
+  $('res').innerHTML=K('Custo total por kg de matéria verde',brl(S.mv>0?total/S.mv:0,3),'big')+
+    K('Custo total por ha (com ensilagem)',brl(total))+K('Custo total por ha (sem ensilagem)',brl(sem))+
+    K('Custo por kg de matéria seca (com ensilagem)',brl(ms>0?total/ms:0,3))+K('Custo por kg de matéria seca (sem ensilagem)',brl(ms>0?sem/ms:0,3))+
+    K('Produção de matéria seca (kg/ha)',f2(ms))+K('Custo de insumos por ha',brl(ins))+K(`Custo total da área (${f2(S.area)} ha)`,brl(total*S.area));
+  const rows=G.filter(g=>g.k!=='Tratamento de semente').map((g,i)=>[g.k,tot[G.indexOf(g)]]).concat([['Financeiro',fin]]);
+  const cA=total*S.area;
+  const lossF=Math.min(Math.max(S.perda,0),100)/100,mnT=S.mv*S.area,msT=ms*S.area,uMN=mnT*(1-lossF),uMS=msT*(1-lossF),stk=S.base==='ms'?uMS:uMN,dias=S.cons>0?stk/S.cons:0;
+  const d0=S.ini?new Date(S.ini+'T12:00:00'):new Date(),fim=new Date(d0);fim.setDate(fim.getDate()+Math.floor(dias));
+  const E=(l,v,s,i,c)=>`<div class="k ${c||''}"><small>${ico(i)}${l}</small><b>${v}</b><span class="tl">${s||''}</span></div>`,tn=v=>f2(v/1000,1)+' t';
+  $('est').innerHTML=E('Produção total, matéria natural',tn(mnT),f2(mnT,0)+' kg','Ensilagem')+E('Produção total, matéria seca',tn(msT),f2(msT,0)+' kg ('+f2(S.ms,1)+'% MS)','drop')+E('Perdas na retirada',tn(mnT*lossF),f2(S.perda,1)+'% da produção (MN)','pie')+E('Estoque útil, matéria natural',tn(uMN),'matéria seca: '+tn(uMS),'Sementes')+E('Custo atualizado do kg (MN)',brl(uMN>0?cA/uMN:0,3),'sem perdas: '+brl(S.mv>0?total/S.mv:0,3),'tag','hl')+E('Custo atualizado do kg (MS)',brl(uMS>0?cA/uMS:0,3),'sem perdas: '+brl(ms>0?total/ms:0,3),'tag','hl')+E('Data prevista do fim do estoque',S.cons>0?fim.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}):'Informe o consumo',S.cons>0?f2(dias,0)+' dias (≈ '+f2(dias/30.4,1)+' meses) a partir de '+d0.toLocaleDateString('pt-BR'):'','cal','big');
+  const vol=Math.max((S.sb+S.st)/2*S.sh*S.sc,0),cap=vol*S.sd,need=S.sd>0?mnT/S.sd:0,ocup=cap>0?mnT/cap*100:0,dif=cap-mnT,cabe=dif>=0&&mnT>=0;
+  {const b=S.sb,t=S.st,H=S.sh;let svg='';
+  if(H>0&&Math.max(b,t)>0){
+   const k=Math.min(170/Math.max(b,t),85/H),wb=b*k,wt=t*k,hh=H*k,Y=150,yt=Y-hh,cx=150,f=Math.min(Math.max(ocup,0),100)/100,A=(b+t)/2*H,a=(t-b)/(2*H);
+   const hf=f<=0?0:(Math.abs(a)<1e-9?f*H:(-b+Math.sqrt(b*b+4*a*f*A))/(2*a)),wf=wb+(wt-wb)*(hf/H),yf=Y-hf*k,over=ocup>100,dome=over?Math.min((ocup-100)/100,.5)*hh+6:0;
+   svg=`<svg viewBox='0 0 300 185' role='img' aria-label='Seção do silo trincheira'><rect x='8' y='${Y}' width='284' height='14' rx='3' style='fill:var(--ln)'/>`+
+   `<polygon points='${cx-wb/2},${Y} ${cx+wb/2},${Y} ${cx+wf/2},${yf} ${cx-wf/2},${yf}' fill='#c9b458'/>`+
+   (over?`<path d='M${cx-wt/2},${yt} Q${cx},${yt-2*dome} ${cx+wt/2},${yt}Z' fill='#c9806f'/>`:'')+
+   `<polygon points='${cx-wb/2},${Y} ${cx+wb/2},${Y} ${cx+wt/2},${yt} ${cx-wt/2},${yt}' fill='none' stroke-width='3' stroke-linejoin='round' style='stroke:var(--ac)'/>`+
+   `<g font-size='11' style='fill:var(--mu)'><text x='${cx}' y='${yt-dome-6}' text-anchor='middle'>topo ${f2(t,1)} m</text><text x='${cx}' y='${Y+11}' text-anchor='middle'>fundo ${f2(b,1)} m</text>`+
+   `<text x='${cx+Math.max(wb,wt)/2+8}' y='${(Y+yt)/2+4}'>${f2(H,1)} m</text><text x='${cx}' y='179' text-anchor='middle'>comprimento ${f2(S.sc,1)} m, ocupação ${f2(ocup,0)}%</text></g></svg>`}
+  $('silo-svg').innerHTML=svg}
+  $('silo').innerHTML=E('Volume do silo',f2(vol,0)+' m³','seção média × comprimento','Ensilagem')+E('Capacidade do silo',tn(cap),f2(cap,0)+' kg a '+f2(S.sd,0)+' kg/m³','Sementes')+E('Produção total (MN)',tn(mnT),f2(mnT,0)+' kg','drop')+E('Volume necessário',f2(need,0)+' m³','a '+f2(S.sd,0)+' kg/m³','pin')+E(cabe?'Cabe no silo':'Não cabe no silo',cabe?'Sobram '+tn(dif)+' ('+f2(vol-need,0)+' m³)':'Faltam '+tn(-dif)+' ('+f2(need-vol,0)+' m³)','Ocupação: '+f2(ocup,1)+'% da capacidade<div class="pg"><i style="width:'+Math.min(ocup,100)+'%"></i></div>',cabe?'ok':'x','big'+(cabe?'':' warn'));
+  {const cMN=S.base==='ms'?(S.ms>0?S.cons/(S.ms/100):0):S.cons,fA=(S.sb+S.st)/2*S.sh,esp=fA>0&&S.sd>0?cMN/(S.sd*fA)*100:0,vd=S.sd>0?cMN/S.sd:0,min30=fA*.3*S.sd,ok=esp>=30,mid=esp>=20&&esp<30;
+  $('fat').innerHTML=E('Espessura da fatia por dia',cMN>0?f2(esp,1)+' cm':'Informe o consumo',cMN<=0?'':ok?'dentro do recomendado (30 cm ou mais)':mid?'atenção: o ideal é 30 cm ou mais':'abaixo do mínimo de 20 cm',ok?'ok':'x','big'+(ok?'':mid?' mid':' warn'))+E('Área da face',f2(fA,1)+' m²','altura × largura média','Ensilagem')+E('Volume retirado por dia',f2(vd,2)+' m³',f2(cMN,0)+' kg MN/dia','pin')+E('Consumo para 30 cm/dia',f2(min30,0)+' kg','matéria natural por dia nesta face','tag')+E('Avanço da face',f2(esp/100*30,1)+' m','a cada 30 dias','cal')}
+  $('sbar').innerHTML=`<div><small>Por kg de matéria verde</small><b>${brl(S.mv>0?total/S.mv:0,3)}</b></div><div><small>Total por ha</small><b>${brl(total)}</b></div>`;
+  $('bars').innerHTML=rows.sort((a,b)=>b[1]-a[1]).map(([n,v])=>{const p=total>0?v/total*100:0;return `<div class="b"><span>${n}</span><span><i style="width:${p}%"></i></span><em>${f2(p,1)}%</em></div>`}).join('');
+}
+
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;
+  if(d.s){S[d.s]=(t.type==='date'||t.tagName==='SELECT')?t.value:(parseFloat(t.value)||0)}
+  else if(d.f){const r=G[d.g].r[d.r];r[d.f]=(d.f==='n'||d.f==='u')?t.value:(parseFloat(t.value)||0)}
+  else return;calc()});
+document.addEventListener('click',e=>{const d=e.target.dataset;
+  if(d.add!==undefined){G[d.add].r.push(R('Novo item',0,'/ha',1));build()}
+  else if(d.del){const[g,r]=d.del.split('-');G[g].r.splice(r,1);build()}
+  else if(e.target.id==='reset'){({S,G}=def());build()}});
+({S,G}=def());build();
+$('dt').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+[['Retirada diária da fatia','ok'],['Silo trincheira','Ensilagem'],['Estoque de silagem','clock'],['Parâmetros da lavoura','param'],['Financeiro','Financeiro'],['Distribuição do custo','pie']].forEach(([t,k])=>{const h=[...document.querySelectorAll('h2')].find(x=>x.textContent===t);if(h)h.insertAdjacentHTML('afterbegin',ico(k))});
+$('tabs').innerHTML=[[1,'Resumo','pie'],[2,'Lavoura','Sementes'],[3,'Demais custos','coin'],[4,'Estoque','clock'],[5,'Silo','Ensilagem']].map(([n,l,i])=>`<button data-tab="${n}" aria-label="${l}">${ico(i)}<span>${l}</span></button>`).join('');
+const setPg=n=>{document.body.dataset.pg=n;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab==n));window.scrollTo(0,0)};
+$('tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(b)setPg(b.dataset.tab)};
+setPg(1);
+$('pr').onclick=()=>{try{window.print()}catch(e){alert('Use Ctrl+P (Cmd+P no Mac) e escolha "Salvar como PDF".')}};
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
